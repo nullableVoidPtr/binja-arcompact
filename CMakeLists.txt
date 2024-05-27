@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.9 FATAL_ERROR)
 
-project(arch_arcompact)
+project(arch_arcompact CXX)
 
 file(GLOB SOURCES
 	*.cpp

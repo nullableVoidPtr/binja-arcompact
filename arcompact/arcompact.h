@@ -7,12 +7,7 @@
 
 #define MAX_OPERANDS 3
 
-
-#ifdef __cplusplus
-#define restrict __restrict
-
 namespace ArCompact {
-#endif
 #pragma pack(push, 1)
 	struct b {
 		uint8_t condition_or_offset_far:5;
@@ -79,7 +74,7 @@ namespace ArCompact {
 		uint8_t b_upper:3;
 		bool set_flag:1;
 		uint8_t sub_opcode:6;
-		uint16_t operand_format:2;
+		uint8_t operand_format:2;
 		uint8_t b_lower:3;
 		uint8_t major_opcode:5;
 	};
@@ -196,7 +191,6 @@ namespace ArCompact {
 	};
 
 	union encoded_instruction {
-		uint8_t lol[4];
 		struct {
 			uint16_t padding:16;
 			uint16_t raw:11;
@@ -435,21 +429,21 @@ namespace ArCompact {
 		REG_IDENTITY,
 		REG_DEBUG,
 		REG_PC,
-		REG_STATUS32,
+		REG_STATUS32 = AUXREG_START + 0xA,
 		REG_STATUS32_L1,
 		REG_STATUS32_L2,
 		REG_MULHI,
 
-		REG_COUNT0,
+		REG_COUNT0 = AUXREG_START + 0x21,
 		REG_CONTROL0,
 		REG_LIMIT0,
 
-		REG_INT_VECTOR_BASE,
-		REG_AUX_MACMODE,
+		REG_INT_VECTOR_BASE = AUXREG_START + 0x25,
+		REG_AUX_MACMODE = AUXREG_START + 0x41,
 		REG_AUX_IRQ_LV12,
 
 		// Build Configuration Registers
-		REG_BCR_VER,
+		REG_BCR_VER = AUXREG_START + 0x60,
 		REG_BTA_LINK_BUILD,
 		REG_EA_BUILD,
 		REG_VECBASE_AC_BUILD,
@@ -461,26 +455,27 @@ namespace ArCompact {
 		REG_MINMAX_BUILD,
 		REG_BARREL_BUILD,
 
-		REG_COUNT1,
+		REG_COUNT1 = AUXREG_START + 0x100,
 		REG_CONTROL1,
 		REG_LIMIT1,
 
-		AUX_IRQ_LEV,
+		AUX_IRQ_LEV = AUXREG_START + 0x200,
 		AUX_IRQ_HINT,
-		ERET,
+
+		ERET = AUXREG_START + 0x400,
 		ERBTA,
 		ERSTATUS,
 		ECR,
 		EFA,
-		ICAUSE1,
+		ICAUSE1 = AUXREG_START + 0x40A,
 		ICAUSE2,
 		AUX_IENABLE,
 		AUX_ITRIGGER,
-		XP,
-		BTA,
+		XPU = AUXREG_START + 0x410,
+		BTA = AUXREG_START + 0x412,
 		BTA_L1,
 		BTA_L2,
-		AUX_IRQ_PULSE_CANCEL,
+		AUX_IRQ_PULSE_CANCEL = 0x415,
 		AUX_IRQ_PENDING,
 
 		// Last valid register
@@ -501,6 +496,10 @@ namespace ArCompact {
 		FLAG_STATUS_E1,
 		FLAG_STATUS_E2,
 		FLAG_STATUS_H,
+
+		// AUX_MACMODE
+		FLAG_STATUS_S1,
+		FLAG_STATUS_S2,
 		
 		// Last valid register
 		END_FLAG,
@@ -517,6 +516,7 @@ namespace ArCompact {
 	};
 
 	enum ConditionCode {
+		NEVER = -2, NA = NEVER,
 		NONE = -1,
 
 		AL = 0, RA = AL, // Always
@@ -549,9 +549,9 @@ namespace ArCompact {
 	};
 
 	enum DataSize {
-		LONG_WORD = 0,
-		WORD,
-		BYTE,
+		LONG_WORD = 0b00,
+		WORD = 0b10,
+		BYTE = 0b01,
 	};
 
 	enum ArcVersion {
@@ -579,7 +579,7 @@ namespace ArCompact {
 		union {
 			int32_t immediate;
 			int32_t offset;
-			uint64_t address;
+			uint32_t address;
 			uint32_t displacement_reg;
 		};
 	};
@@ -630,28 +630,18 @@ namespace ArCompact {
 	typedef union encoded_instruction encoded_instruction;
 #endif
 
+	//Given a uint16_t instructionValue decopose the instruction
+	//into its components -> instruction
+	uint32_t arcompact_decompose(
+			const uint16_t* instructionValue,
+			size_t maxSize,
+			Instruction* __restrict instruction,
+			uint32_t version,
+			uint32_t address,
+			uint32_t bigEndian);
 
-#ifdef __cplusplus
-	extern "C" {
-#endif
-		//Given a uint16_t instructionValue decopose the instruction
-		//into its components -> instruction
-		uint32_t arcompact_decompose(
-				const uint16_t* instructionValue,
-				size_t maxSize,
-				Instruction* restrict instruction,
-				uint32_t version,
-				uint64_t address,
-				uint32_t bigEndian);
-
-		const char* get_operation(Operation operation);
-		const char* get_register(Reg reg);
-		const char* get_flag(Flag flag);
-		const char* get_condition(ConditionCode condition);
-#ifdef __cplusplus
-	}
-#endif
-
-#ifdef __cplusplus
+	const char* get_operation(Operation operation);
+	const char* get_register(Reg reg);
+	const char* get_flag(Flag flag);
+	const char* get_condition(ConditionCode condition);
 }
-#endif
