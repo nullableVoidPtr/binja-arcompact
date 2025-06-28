@@ -61,4 +61,5 @@ jobs:
         name: ${{matrix.config.name}}-${{matrix.version.name}}
         path: |
           ${{github.workspace}}/build/libarch_arcompact.so
+          ${{github.workspace}}/build/libarch_arcompact.dylib
           ${{github.workspace}}/build/arch_arcompact.dll
