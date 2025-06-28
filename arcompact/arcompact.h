@@ -549,9 +549,9 @@ namespace ArCompact {
 	};
 
 	enum DataSize {
-		LONG_WORD = 0b00,
-		WORD = 0b10,
-		BYTE = 0b01,
+		LONG_WORD_32 = 0b00,
+		WORD_16 = 0b10,
+		BYTE_8 = 0b01,
 	};
 
 	enum ArcVersion {
@@ -588,7 +588,7 @@ namespace ArCompact {
 	typedef struct InstructionOperand InstructionOperand;
 #endif
 
-	struct Instruction{
+	struct Instruction {
 		bool compact;
 
 		Operation operation;
@@ -630,7 +630,7 @@ namespace ArCompact {
 	typedef union encoded_instruction encoded_instruction;
 #endif
 
-	//Given a uint16_t instructionValue decopose the instruction
+	//Given a uint16_t instructionValue decompose the instruction
 	//into its components -> instruction
 	uint32_t arcompact_decompose(
 			const uint16_t* instructionValue,
@@ -638,7 +638,7 @@ namespace ArCompact {
 			Instruction* __restrict instruction,
 			uint32_t version,
 			uint32_t address,
-			uint32_t bigEndian);
+			bool bigEndian);
 
 	const char* get_operation(Operation operation);
 	const char* get_register(Reg reg);

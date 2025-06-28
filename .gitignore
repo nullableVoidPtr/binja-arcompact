@@ -44,3 +44,5 @@ CTestTestfile.cmake
 _deps
 
 api/
+build/
+.cache/

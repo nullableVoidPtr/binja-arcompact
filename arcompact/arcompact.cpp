@@ -196,64 +196,6 @@ namespace ArCompact {
 		"pcl",
 	};
 
-	static const char* AuxiliaryRegisterStrings[] = {
-		[REG_STATUS]="STATUS",
-		[REG_SEMAPHORE]="SEMAPHORE",
-		[REG_LP_START]="LP_START",
-		[REG_LP_END]="LP_END",
-		[REG_IDENTITY]="IDENTITY",
-		[REG_DEBUG]="DEBUG",
-		[REG_PC]="PC",
-		[REG_STATUS32]="STATUS32",
-		[REG_STATUS32_L1]="STATUS32_L1",
-		[REG_STATUS32_L2]="STATUS32_L2",
-		[REG_MULHI]="MULHI",
-
-		[REG_COUNT0]="COUNT0",
-		[REG_CONTROL0]="CONTROL0",
-		[REG_LIMIT0]="LIMIT0",
-
-		[REG_INT_VECTOR_BASE]="INT_VECTOR_BASE",
-		[REG_AUX_MACMODE]="AUX_MACMODE",
-		[REG_AUX_IRQ_LV12]="AUX_IRQ_LV12",
-
-		// Build Configuration Registers
-		[REG_BCR_VER]="BCR_VER",
-		[REG_BTA_LINK_BUILD]="BTA_LINK_BUILD",
-		[REG_EA_BUILD]="EA_BUILD",
-		[REG_VECBASE_AC_BUILD]="VECBASE_AC_BUILD",
-		[REG_RF_BUILD]="RF_BUILD",
-		[REG_TIMER_BUILD]="TIMER_BUILD",
-		[REG_MULTIPLY_BUILD]="MULTIPLY_BUILD", 
-		[REG_SWAP_BUILD]="SWAP_BUILD",
-		[REG_NORM_BUILD]="NORM_BUILD",
-		[REG_MINMAX_BUILD]="MINMAX_BUILD",
-		[REG_BARREL_BUILD]="BARREL_BUILD",
-
-		[REG_COUNT1]="COUNT1",
-		[REG_CONTROL1]="CONTROL1",
-		[REG_LIMIT1]="LIMIT1",
-
-		[AUX_IRQ_LEV]="AUX_IRQ_LEV",
-		[AUX_IRQ_HINT]="AUX_IRQ_HINT",
-
-		[ERET]="ERET",
-		[ERBTA]="ERBTA",
-		[ERSTATUS]="ERSTATUS",
-		[ECR]="ECR",
-		[EFA]="EFA",
-		[ICAUSE1]="ICAUSE1",
-		[ICAUSE2]="ICAUSE2",
-		[AUX_IENABLE]="AUX_IENABLE",
-		[AUX_ITRIGGER]="AUX_ITRIGGER",
-		[XPU]="XPU",
-		[BTA]="BTA",
-		[BTA_L1]="BTA_L1",
-		[BTA_L2]="BTA_L2",
-		[AUX_IRQ_PULSE_CANCEL]="AUX_IRQ_PULSE_CANCEL",
-		[AUX_IRQ_PENDING]="AUX_IRQ_PENDING",
-	};
-
 	static const char* ConditionStrings[] = {
 		"al",
 		"eq",
@@ -294,9 +236,11 @@ namespace ArCompact {
 	};
 
 	uint8_t cvt_16bit_reg(uint8_t reg) {
+		/*
 		if (reg > 7) {
 			return END_REG;
 		}
+		*/
 
 		if (reg < 4) {
 			return REG_R0 + reg;
@@ -323,7 +267,65 @@ namespace ArCompact {
 		}
 
 		if (reg >= AUXREG_START) {
-			return AuxiliaryRegisterStrings[reg];
+			switch (reg) {
+				case REG_STATUS: return "STATUS";
+				case REG_SEMAPHORE: return "SEMAPHORE";
+				case REG_LP_START: return "LP_START";
+				case REG_LP_END: return "LP_END";
+				case REG_IDENTITY: return "IDENTITY";
+				case REG_DEBUG: return "DEBUG";
+				case REG_PC: return "PC";
+				case REG_STATUS32: return "STATUS32";
+				case REG_STATUS32_L1: return "STATUS32_L1";
+				case REG_STATUS32_L2: return "STATUS32_L2";
+				case REG_MULHI: return "MULHI";
+
+				case REG_COUNT0: return "COUNT0";
+				case REG_CONTROL0: return "CONTROL0";
+				case REG_LIMIT0: return "LIMIT0";
+
+				case REG_INT_VECTOR_BASE: return "INT_VECTOR_BASE";
+				case REG_AUX_MACMODE: return "AUX_MACMODE";
+				case REG_AUX_IRQ_LV12: return "AUX_IRQ_LV12";
+
+				// Build Configuration Registers
+				case REG_BCR_VER: return "BCR_VER";
+				case REG_BTA_LINK_BUILD: return "BTA_LINK_BUILD";
+				case REG_EA_BUILD: return "EA_BUILD";
+				case REG_VECBASE_AC_BUILD: return "VECBASE_AC_BUILD";
+				case REG_RF_BUILD: return "RF_BUILD";
+				case REG_TIMER_BUILD: return "TIMER_BUILD";
+				case REG_MULTIPLY_BUILD: return "MULTIPLY_BUILD"; 
+				case REG_SWAP_BUILD: return "SWAP_BUILD";
+				case REG_NORM_BUILD: return "NORM_BUILD";
+				case REG_MINMAX_BUILD: return "MINMAX_BUILD";
+				case REG_BARREL_BUILD: return "BARREL_BUILD";
+
+				case REG_COUNT1: return "COUNT1";
+				case REG_CONTROL1: return "CONTROL1";
+				case REG_LIMIT1: return "LIMIT1";
+
+				case AUX_IRQ_LEV: return "AUX_IRQ_LEV";
+				case AUX_IRQ_HINT: return "AUX_IRQ_HINT";
+
+				case ERET: return "ERET";
+				case ERBTA: return "ERBTA";
+				case ERSTATUS: return "ERSTATUS";
+				case ECR: return "ECR";
+				case EFA: return "EFA";
+				case ICAUSE1: return "ICAUSE1";
+				case ICAUSE2: return "ICAUSE2";
+				case AUX_IENABLE: return "AUX_IENABLE";
+				case AUX_ITRIGGER: return "AUX_ITRIGGER";
+				case XPU: return "XPU";
+				case BTA: return "BTA";
+				case BTA_L1: return "BTA_L1";
+				case BTA_L2: return "BTA_L2";
+				case AUX_IRQ_PULSE_CANCEL: return "AUX_IRQ_PULSE_CANCEL";
+				case AUX_IRQ_PENDING: return "AUX_IRQ_PENDING";
+			}
+
+			return NULL;
 		}
 
 		if (reg >= 0)
@@ -452,19 +454,19 @@ namespace ArCompact {
 				break;
 			case 0x05:
 				instruction->operation = ARC_SEX;
-				instruction->data_size = BYTE;
+				instruction->data_size = BYTE_8;
 				break;
 			case 0x06:
 				instruction->operation = ARC_SEX;
-				instruction->data_size = WORD;
+				instruction->data_size = WORD_16;
 				break;
 			case 0x07:
 				instruction->operation = ARC_EXT;
-				instruction->data_size = BYTE;
+				instruction->data_size = BYTE_8;
 				break;
 			case 0x08:
 				instruction->operation = ARC_EXT;
-				instruction->data_size = WORD;
+				instruction->data_size = WORD_16;
 				break;
 			case 0x09:
 				instruction->operation = ARC_ABS;
@@ -892,19 +894,19 @@ namespace ArCompact {
 				break;
 			case 0x04:
 				instruction->operation = ARC_ABSS;
-				instruction->data_size = WORD;
+				instruction->data_size = WORD_16;
 				break;
 			case 0x05:
 				instruction->operation = ARC_ABSS;
 				break;
 			case 0x06:
 				instruction->operation = ARC_NEGS;
-				instruction->data_size = WORD;
+				instruction->data_size = WORD_16;
 			case 0x07:
 				instruction->operation = ARC_NEGS;
 			case 0x08:
 				instruction->operation = ARC_NORM;
-				instruction->data_size = WORD;
+				instruction->data_size = WORD_16;
 			case 0x3F:
 				return decompose_extension_zero_operand(
 					ins,
@@ -1129,22 +1131,22 @@ namespace ArCompact {
 				break;
 			case 0x0D:
 				instruction->operation = ARC_SEX;
-				instruction->data_size = BYTE;
+				instruction->data_size = BYTE_8;
 				dst_is_src = false;
 				break;
 			case 0x0E:
 				instruction->operation = ARC_SEX;
-				instruction->data_size = WORD;
+				instruction->data_size = WORD_16;
 				dst_is_src = false;
 				break;
 			case 0x0F:
 				instruction->operation = ARC_EXT;
-				instruction->data_size = BYTE;
+				instruction->data_size = BYTE_8;
 				dst_is_src = false;
 				break;
 			case 0x10:
 				instruction->operation = ARC_EXT;
-				instruction->data_size = WORD;
+				instruction->data_size = WORD_16;
 				dst_is_src = false;
 				break;
 			case 0x11:
@@ -1478,15 +1480,15 @@ namespace ArCompact {
 				switch (decoded_ins.sub_opcode) {
 					case 0x00:
 						instruction->operation = ARC_LD;
-						instruction->data_size = LONG_WORD;
+						instruction->data_size = LONG_WORD_32;
 						break;
 					case 0x01:
 						instruction->operation = ARC_LD;
-						instruction->data_size = BYTE;
+						instruction->data_size = BYTE_8;
 						break;
 					case 0x02:
 						instruction->operation = ARC_LD;
-						instruction->data_size = WORD;
+						instruction->data_size = WORD_16;
 						break;
 					case 0x03:
 						instruction->operation = ARC_ADD;
@@ -1593,35 +1595,35 @@ namespace ArCompact {
 				switch (ins.compact.major_opcode) {
 					case 0x10:
 						instruction->operation = ARC_LD;
-						instruction->data_size = LONG_WORD;
+						instruction->data_size = LONG_WORD_32;
 						offset <<= 2;
 						break;
 					case 0x11:
 						instruction->operation = ARC_LD;
-						instruction->data_size = BYTE;
+						instruction->data_size = BYTE_8;
 						break;
 					case 0x12:
 						instruction->operation = ARC_LD;
-						instruction->data_size = WORD;
+						instruction->data_size = WORD_16;
 						offset <<= 1;
 						break;
 					case 0x13:
 						instruction->operation = ARC_LD;
-						instruction->data_size = WORD;
+						instruction->data_size = WORD_16;
 						instruction->sign_extend = true;
 						offset <<= 1;
 						break;
 					case 0x14:
 						instruction->operation = ARC_ST;
-						instruction->data_size = LONG_WORD;
+						instruction->data_size = LONG_WORD_32;
 						break;
 					case 0x15:
 						instruction->operation = ARC_ST;
-						instruction->data_size = BYTE;
+						instruction->data_size = BYTE_8;
 						break;
 					case 0x16:
 						instruction->operation = ARC_ST;
-						instruction->data_size = WORD;
+						instruction->data_size = WORD_16;
 						break;
 					default:
 						return 1;
@@ -1724,19 +1726,19 @@ namespace ArCompact {
 					switch (decoded_ins.sub_opcode) {
 						case 0x00:
 							instruction->operation = ARC_LD;
-							instruction->data_size = LONG_WORD;
+							instruction->data_size = LONG_WORD_32;
 							break;
 						case 0x01:
 							instruction->operation = ARC_LD;
-							instruction->data_size = BYTE;
+							instruction->data_size = BYTE_8;
 							break;
 						case 0x02:
 							instruction->operation = ARC_ST;
-							instruction->data_size = LONG_WORD;
+							instruction->data_size = LONG_WORD_32;
 							break;
 						case 0x03:
 							instruction->operation = ARC_ST;
-							instruction->data_size = BYTE;
+							instruction->data_size = BYTE_8;
 							break;
 						default:
 							break;
@@ -1759,15 +1761,15 @@ namespace ArCompact {
 				uint32_t offset;
 				switch (decoded_ins.sub_opcode) {
 					case 0b00:
-						instruction->data_size = LONG_WORD;
+						instruction->data_size = LONG_WORD_32;
 						offset = encoded_offset << 2;
 						break;
 					case 0b01:
-						instruction->data_size = BYTE;
+						instruction->data_size = BYTE_8;
 						offset = encoded_offset;
 						break;
 					case 0b10:
-						instruction->data_size = WORD;
+						instruction->data_size = WORD_16;
 						offset = encoded_offset << 1;
 						break;
 					case 0b11:
@@ -1784,7 +1786,7 @@ namespace ArCompact {
 				one_reg_one_imm decoded_ins = ins.one_reg_one_imm;
 
 				instruction->operation = ARC_LD;
-				instruction->data_size = LONG_WORD;
+				instruction->data_size = LONG_WORD_32;
 
 				ARG_REG_REDUCED(&instruction->operands[0], decoded_ins.reg);
 				ARG_REG_IMM_REL(&instruction->operands[1], REG_PCL, ins.one_reg_one_imm.imm << 2);
@@ -1914,7 +1916,7 @@ namespace ArCompact {
 			Instruction* __restrict instruction,
 			uint32_t version,
 			uint32_t address,
-			uint32_t bigEndian) {
+			bool bigEndian) {
 		encoded_instruction ins;
 		if (instructionValue == NULL) {
 			return 1;

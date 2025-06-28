@@ -10,6 +10,7 @@ file(GLOB SOURCES
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 
+set(HEADLESS 1)
 find_path(
     BN_API_PATH
     NAMES binaryninjaapi.h
@@ -25,7 +26,7 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} binaryninjaapi)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    CXX_STANDARD 17
+    CXX_STANDARD 20
 	CXX_VISIBILITY_PRESET hidden
 	CXX_STANDARD_REQUIRED ON
 	C_STANDARD 99

@@ -452,7 +452,7 @@ class ArcArchitecture : public Architecture {
 			case ARC_NEGS:
 			case ARC_NORM:
 				if (instruction.data_size) {
-					strncat(operation, (instruction.data_size == BYTE) ? "b" : "w", 1);
+					strncat(operation, (instruction.data_size == BYTE_8) ? "b" : "w", 1);
 					bytes_left -= 1;
 				}
 			default:
@@ -712,6 +712,10 @@ class ArcCallingConvention: public CallingConvention {
 extern "C" {
 	BN_DECLARE_CORE_ABI_VERSION
 
+	BINARYNINJAPLUGIN void CorePluginDependencies() {
+		AddOptionalPluginDependency("view_elf");
+	}
+
 	BINARYNINJAPLUGIN bool CorePluginInit() {
 		Architecture* a5el = new ArcArchitecture("arctangent-a5", ARC_TANGENT_A5, LittleEndian);
 		Architecture* a5eb = new ArcArchitecture("arctangent-a5eb", ARC_TANGENT_A5, BigEndian);
@@ -729,6 +733,7 @@ extern "C" {
 
 		ArcCallingConvention* o32LE = new ArcCallingConvention(arc600eb);
 
+		BinaryViewType::RegisterArchitecture("ELF", 0x5d, LittleEndian, a5el);
 
 		// TODO bvtype register
 		return true;

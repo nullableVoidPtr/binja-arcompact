@@ -240,6 +240,43 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint32_t addr, LowLevelILFu
 		break;
 
 		// Unary operations
+		case ARC_ABS: {
+			const InstructionOperand& dst = instruction.operands[0];
+
+			ExprId src = ReadILOperand(il, instruction.operands[1], 1, addr, REG_SZ);
+
+			ExprId msbIsSet = il.TestBit(REG_SZ, src, il.Const(REG_SZ, 31));
+			ExprId isNegativeZero = il.CompareEqual(REG_SZ, src, il.Const(REG_SZ, 0x80000000));
+
+			LowLevelILLabel negativeLabel, positiveLabel, endLabel;
+
+			il.AddInstruction(il.If(msbIsSet, negativeLabel, positiveLabel));
+
+			il.MarkLabel(negativeLabel);
+			ExprId alu = il.Sub(REG_SZ, il.Const(REG_SZ, 0), src);
+			WriteILOperand(il, dst, 0, addr, REG_SZ, alu);
+			if (instruction.set_flag) {
+				il.AddInstruction(il.SetFlag(FLAG_STATUS_Z, il.CompareEqual(REG_SZ, alu, il.Const(REG_SZ, 0))));
+			}
+			il.AddInstruction(il.Goto(endLabel));
+
+			il.MarkLabel(positiveLabel);
+			WriteILOperand(il, dst, 0, addr, REG_SZ, src);
+			if (instruction.set_flag) {
+				il.AddInstruction(il.SetFlag(FLAG_STATUS_Z, il.CompareEqual(REG_SZ, src, il.Const(REG_SZ, 0))));
+			}
+			il.AddInstruction(il.Goto(endLabel));
+
+			il.MarkLabel(endLabel);
+
+			if (instruction.set_flag) {
+				il.AddInstruction(il.SetFlag(FLAG_STATUS_N, isNegativeZero));
+				il.AddInstruction(il.SetFlag(FLAG_STATUS_C, msbIsSet));
+				il.AddInstruction(il.SetFlag(FLAG_STATUS_V, isNegativeZero));
+			}
+		}
+		break;
+
 		case ARC_MOV:
 		case ARC_EXT: 
 		case ARC_SEX:
@@ -247,7 +284,6 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint32_t addr, LowLevelILFu
 		case ARC_RRC:
 		case ARC_RLC:
 		case ARC_NEG: 
-		case ARC_ABS:
 		case ARC_FLAG: {
 			uint32_t operation = instruction.operation;
 
@@ -255,7 +291,7 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint32_t addr, LowLevelILFu
 
 			ExprId src;
 			if (operation == ARC_EXT || operation == ARC_SEX) {
-				src = ReadILOperand(il, instruction.operands[1], 1, addr, (instruction.data_size == BYTE) ? 1 : 2);
+				src = ReadILOperand(il, instruction.operands[1], 1, addr, (instruction.data_size == BYTE_8) ? 1 : 2);
 			} else {
 				src = ReadILOperand(il, instruction.operands[1], 1, addr, REG_SZ);
 			}
@@ -305,8 +341,6 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint32_t addr, LowLevelILFu
 				case ARC_NEG:
 					expr = il.Neg(REG_SZ, src, flags);
 					break;
-				case ARC_ABS: // TODO
-					return false;
 				case ARC_FLAG: // TODO
 					return false;
 			}
@@ -697,9 +731,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint32_t addr, LowLevelILFu
 					break;
 				case AS:
 					uint8_t shift;
-					if (instruction.data_size == WORD) {
+					if (instruction.data_size == WORD_16) {
 						shift = 1;
-					} else if (instruction.data_size == LONG_WORD) {
+					} else if (instruction.data_size == LONG_WORD_32) {
 						shift = 2;
 					} else {
 						return false;
@@ -733,9 +767,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint32_t addr, LowLevelILFu
 			}
 
 			uint8_t load_size = 4;
-			if (instruction.data_size == WORD) {
+			if (instruction.data_size == WORD_16) {
 				load_size = 2;
-			} else if (instruction.data_size == BYTE) {
+			} else if (instruction.data_size == BYTE_8) {
 				load_size = 1;
 			}
 
@@ -793,9 +827,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint32_t addr, LowLevelILFu
 					break;
 				case AS:
 					uint8_t shift;
-					if (instruction.data_size == WORD) {
+					if (instruction.data_size == WORD_16) {
 						shift = 1;
-					} else if (instruction.data_size == LONG_WORD) {
+					} else if (instruction.data_size == LONG_WORD_32) {
 						shift = 2;
 					} else {
 						return false;
@@ -805,9 +839,9 @@ bool GetLowLevelILForInstruction(Architecture* arch, uint32_t addr, LowLevelILFu
 			}
 
 			uint8_t store_size = 4;
-			if (instruction.data_size == WORD) {
+			if (instruction.data_size == WORD_16) {
 				store_size = 2;
-			} else if (instruction.data_size == BYTE) {
+			} else if (instruction.data_size == BYTE_8) {
 				store_size = 1;
 			}
 
